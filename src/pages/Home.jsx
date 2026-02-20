@@ -21,7 +21,6 @@ function Home({ user }) {
         }))
       );
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -40,12 +39,12 @@ function Home({ user }) {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.grid}>
       {houses.map((house) => (
         <div key={house.id} style={styles.card}>
           <img src={house.imageUrl} alt="house" style={styles.image} />
 
-          <div style={styles.info}>
+          <div style={{ padding: "10px" }}>
             <p><b>Owner:</b> {house.ownerEmail}</p>
 
             <button
@@ -68,9 +67,9 @@ function Home({ user }) {
 }
 
 const styles = {
-  container: {
+  grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px,1fr))",
     gap: "20px",
     padding: "20px"
   },
@@ -85,15 +84,11 @@ const styles = {
     height: "200px",
     objectFit: "cover"
   },
-  info: {
-    padding: "10px"
-  },
   wishlist: {
-    border: "none",
     padding: "8px 15px",
     borderRadius: "20px",
-    cursor: "pointer",
-    marginTop: "10px"
+    border: "none",
+    cursor: "pointer"
   }
 };
 

@@ -8,7 +8,7 @@ function Navbar({ user }) {
 
       <div>
         <span style={{ marginRight: "15px" }}>{user.email}</span>
-        <button style={styles.btn} onClick={() => signOut(auth)}>
+        <button style={styles.button} onClick={() => signOut(auth)}>
           Logout
         </button>
       </div>
@@ -21,19 +21,18 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "15px 20px",
+    padding: "15px 30px",
     background: "white",
     boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
     position: "sticky",
-    top: 0,
-    zIndex: 100
+    top: 0
   },
-  btn: {
-    background: "#ff385c",
-    color: "white",
-    border: "none",
+  button: {
     padding: "8px 15px",
     borderRadius: "20px",
+    border: "none",
+    background: "#ff385c",
+    color: "white",
     cursor: "pointer"
   }
 };
