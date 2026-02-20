@@ -1,30 +1,41 @@
-import { Link } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "./firebase";
 
-function Navbar() {
+function Navbar({ user }) {
   return (
-    <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center">
-      <Link to="/" className="text-2xl font-bold text-red-500">
-        StayFinder
-      </Link>
+    <div style={styles.nav}>
+      <h2 style={{ color: "#ff385c" }}>StayFinder</h2>
 
-      <div className="flex gap-6 items-center">
-        <Link to="/" className="hover:text-red-500">
-          Home
-        </Link>
-
-        <Link to="/buyer-dashboard" className="hover:text-red-500">
-          Dashboard
-        </Link>
-
-        <Link
-          to="/login"
-          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-        >
-          Login
-        </Link>
+      <div>
+        <span style={{ marginRight: "15px" }}>{user.email}</span>
+        <button style={styles.btn} onClick={() => signOut(auth)}>
+          Logout
+        </button>
       </div>
-    </nav>
+    </div>
   );
 }
+
+const styles = {
+  nav: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px 20px",
+    background: "white",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+    position: "sticky",
+    top: 0,
+    zIndex: 100
+  },
+  btn: {
+    background: "#ff385c",
+    color: "white",
+    border: "none",
+    padding: "8px 15px",
+    borderRadius: "20px",
+    cursor: "pointer"
+  }
+};
 
 export default Navbar;

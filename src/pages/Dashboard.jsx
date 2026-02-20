@@ -1,31 +1,44 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { storage, db } from "./firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
 
 function Dashboard({ user }) {
-  const navigate = useNavigate();
+  const [image, setImage] = useState(null);
+
+  const uploadImage = async () => {
+    if (!image) return alert("Select image");
+
+    const imageRef = ref(storage, `houses/${Date.now()}-${image.name}`);
+    await uploadBytes(imageRef, image);
+    const url = await getDownloadURL(imageRef);
+
+    await addDoc(collection(db, "houses"), {
+      imageUrl: url,
+      ownerEmail: user.email,
+      wishlist: []
+    });
+
+    alert("Uploaded Successfully");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
-      <h1 className="text-4xl font-bold mb-6">
-        Welcome to your Dashboard 🎉
-      </h1>
-
-      <div className="bg-white p-6 rounded-xl shadow-md">
-        <h2 className="text-xl font-semibold">
-          Logged in as: {user}
-        </h2>
-
-        <p className="mt-3 text-gray-600">
-          Manage your properties and grow your listings.
-        </p>
-
-        <button
-          onClick={() => navigate("/add-property")}
-          className="mt-6 bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition"
-        >
-          + Add Property
-        </button>
-      </div>
+    <div style={{ padding: "20px" }}>
+      <h3>Upload Your House</h3>
+      <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+      <button
+        style={{
+          marginLeft: "10px",
+          padding: "8px 15px",
+          background: "#ff385c",
+          color: "white",
+          border: "none",
+          borderRadius: "20px"
+        }}
+        onClick={uploadImage}
+      >
+        Upload
+      </button>
     </div>
   );
 }

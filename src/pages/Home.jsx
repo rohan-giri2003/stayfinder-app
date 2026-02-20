@@ -1,22 +1,100 @@
-import Hero from "../components/Hero";
-import PropertyCard from "../components/PropertyCard";
+import { useEffect, useState } from "react";
+import { db } from "./firebase";
+import {
+  collection,
+  onSnapshot,
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove
+} from "firebase/firestore";
 
-function Home({ properties }) {
+function Home({ user }) {
+  const [houses, setHouses] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "houses"), (snapshot) => {
+      setHouses(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      );
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const toggleWishlist = async (house) => {
+    const houseRef = doc(db, "houses", house.id);
+
+    if (house.wishlist?.includes(user.uid)) {
+      await updateDoc(houseRef, {
+        wishlist: arrayRemove(user.uid)
+      });
+    } else {
+      await updateDoc(houseRef, {
+        wishlist: arrayUnion(user.uid)
+      });
+    }
+  };
+
   return (
-    <div>
-      <Hero />
+    <div style={styles.container}>
+      {houses.map((house) => (
+        <div key={house.id} style={styles.card}>
+          <img src={house.imageUrl} alt="house" style={styles.image} />
 
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold mb-10">Explore Stays</h2>
+          <div style={styles.info}>
+            <p><b>Owner:</b> {house.ownerEmail}</p>
 
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {properties.map((property) => (
-            <PropertyCard key={property.id} {...property} />
-          ))}
+            <button
+              style={{
+                ...styles.wishlist,
+                background:
+                  house.wishlist?.includes(user.uid)
+                    ? "#ff385c"
+                    : "#ddd"
+              }}
+              onClick={() => toggleWishlist(house)}
+            >
+              ❤️ Wishlist
+            </button>
+          </div>
         </div>
-      </section>
+      ))}
     </div>
   );
 }
+
+const styles = {
+  container: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "20px",
+    padding: "20px"
+  },
+  card: {
+    background: "white",
+    borderRadius: "15px",
+    overflow: "hidden",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.1)"
+  },
+  image: {
+    width: "100%",
+    height: "200px",
+    objectFit: "cover"
+  },
+  info: {
+    padding: "10px"
+  },
+  wishlist: {
+    border: "none",
+    padding: "8px 15px",
+    borderRadius: "20px",
+    cursor: "pointer",
+    marginTop: "10px"
+  }
+};
 
 export default Home;
