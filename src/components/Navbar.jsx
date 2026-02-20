@@ -1,49 +1,28 @@
 import { Link } from "react-router-dom";
 
-function Navbar({ setSearchTerm, wishlistCount, user, logout }) {
+function Navbar() {
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between items-center">
-
-      {/* Logo */}
-      <Link to="/" className="text-xl font-bold">
+    <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center">
+      <Link to="/" className="text-2xl font-bold text-red-500">
         StayFinder
       </Link>
 
-      {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search location..."
-        className="border px-4 py-2 rounded-full w-64"
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-
-      {/* Right Section */}
-      <div className="flex items-center gap-4">
-
-        {/* Wishlist */}
-        <Link to="/wishlist" className="font-semibold">
-          ❤️ Wishlist ({wishlistCount})
+      <div className="flex gap-6 items-center">
+        <Link to="/" className="hover:text-red-500">
+          Home
         </Link>
 
-        {/* Auth Button */}
-        {user ? (
-          <button
-            onClick={logout}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg"
-          >
-            Logout
-          </button>
-        ) : (
-          <Link
-            to="/add"
-            className="bg-black text-white px-4 py-2 rounded-lg"
-          >
-            Login
-          </Link>
-        )}
+        <Link to="/buyer-dashboard" className="hover:text-red-500">
+          Dashboard
+        </Link>
 
+        <Link
+          to="/login"
+          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+        >
+          Login
+        </Link>
       </div>
-
     </nav>
   );
 }

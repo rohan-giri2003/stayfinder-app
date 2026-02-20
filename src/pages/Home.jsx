@@ -1,24 +1,20 @@
+import Hero from "../components/Hero";
 import PropertyCard from "../components/PropertyCard";
 
-function Home({ properties, toggleWishlist, wishlist }) {
+function Home({ properties }) {
   return (
-    <div className="max-w-7xl mx-auto p-8">
-      {properties.length === 0 && (
-        <p className="text-center text-gray-500 text-lg">
-          No properties found 😢
-        </p>
-      )}
+    <div>
+      <Hero />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {properties.map((property) => (
-          <PropertyCard
-            key={property.id}
-            {...property}
-            toggleWishlist={toggleWishlist}
-            isLiked={wishlist.some((item) => item.id === property.id)}
-          />
-        ))}
-      </div>
+      <section className="max-w-7xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-bold mb-10">Explore Stays</h2>
+
+        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {properties.map((property) => (
+            <PropertyCard key={property.id} {...property} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

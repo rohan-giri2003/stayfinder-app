@@ -1,41 +1,24 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function AddProperty({ addProperty }) {
+function AddProperty({ addNewProperty }) {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    title: "",
-    location: "",
-    price: "",
-    rating: "",
-    image: ""
-  });
-
+  const [title, setTitle] = useState("");
+  const [location, setLocation] = useState("");
+  const [price, setPrice] = useState("");
+  const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  // 📸 Image Upload Handler
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-
     if (file) {
-      const reader = new FileReader();
+      setImage(file);
 
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          image: reader.result
-        });
         setPreview(reader.result);
       };
-
       reader.readAsDataURL(file);
     }
   };
@@ -43,83 +26,75 @@ function AddProperty({ addProperty }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!title || !location || !price || !preview) {
+      alert("Please fill all fields");
+      return;
+    }
+
     const newProperty = {
-      ...formData,
-      id: Date.now()
+      id: Date.now(),
+      title,
+      location,
+      price,
+      image: preview,
+      rating: 4.5,
     };
 
-    addProperty(newProperty);
+    addNewProperty(newProperty);
+
     navigate("/");
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="min-h-screen bg-gray-100 p-10">
+      <h1 className="text-3xl font-bold mb-6">Add New Property</h1>
+
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-96"
+        className="bg-white p-6 rounded-xl shadow-md max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Add New Property
-        </h2>
-
         <input
           type="text"
-          name="title"
           placeholder="Property Title"
-          className="w-full border p-3 rounded-lg mb-4"
-          onChange={handleChange}
-          required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="border w-full p-2 mb-3 rounded"
         />
 
         <input
           type="text"
-          name="location"
           placeholder="Location"
-          className="w-full border p-3 rounded-lg mb-4"
-          onChange={handleChange}
-          required
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="border w-full p-2 mb-3 rounded"
         />
 
         <input
           type="text"
-          name="price"
           placeholder="Price"
-          className="w-full border p-3 rounded-lg mb-4"
-          onChange={handleChange}
-          required
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="border w-full p-2 mb-3 rounded"
         />
 
-        <input
-          type="number"
-          name="rating"
-          placeholder="Rating (4.5)"
-          step="0.1"
-          className="w-full border p-3 rounded-lg mb-4"
-          onChange={handleChange}
-          required
-        />
-
-        {/* 📸 Image Upload */}
         <input
           type="file"
           accept="image/*"
-          className="w-full mb-4"
           onChange={handleImageChange}
-          required
+          className="mb-4"
         />
 
-        {/* Preview */}
         {preview && (
           <img
             src={preview}
             alt="Preview"
-            className="w-full h-40 object-cover rounded-lg mb-4"
+            className="h-40 w-full object-cover rounded mb-4"
           />
         )}
 
         <button
           type="submit"
-          className="w-full bg-black text-white p-3 rounded-lg"
+          className="bg-black text-white w-full py-2 rounded hover:bg-gray-800 transition"
         >
           Add Property
         </button>
