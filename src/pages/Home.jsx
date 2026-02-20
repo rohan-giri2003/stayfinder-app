@@ -1,95 +1,48 @@
-import { useEffect, useState } from "react";
-import { db } from "./firebase";
-import {
-  collection,
-  onSnapshot,
-  doc,
-  updateDoc,
-  arrayUnion,
-  arrayRemove
-} from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import Hero from "../components/Hero";
+import PropertyCard from "../components/PropertyCard";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
-function Home({ user }) {
-  const [houses, setHouses] = useState([]);
+function Home() {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "houses"), (snapshot) => {
-      setHouses(
-        snapshot.docs.map((doc) => ({
+    const fetchProperties = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "listings"));
+        const data = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }))
-      );
-    });
-    return () => unsubscribe();
+        }));
+        setProperties(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
   }, []);
 
-  const toggleWishlist = async (house) => {
-    const houseRef = doc(db, "houses", house.id);
-
-    if (house.wishlist?.includes(user.uid)) {
-      await updateDoc(houseRef, {
-        wishlist: arrayRemove(user.uid)
-      });
-    } else {
-      await updateDoc(houseRef, {
-        wishlist: arrayUnion(user.uid)
-      });
-    }
-  };
-
   return (
-    <div style={styles.grid}>
-      {houses.map((house) => (
-        <div key={house.id} style={styles.card}>
-          <img src={house.imageUrl} alt="house" style={styles.image} />
-
-          <div style={{ padding: "10px" }}>
-            <p><b>Owner:</b> {house.ownerEmail}</p>
-
-            <button
-              style={{
-                ...styles.wishlist,
-                background:
-                  house.wishlist?.includes(user.uid)
-                    ? "#ff385c"
-                    : "#ddd"
-              }}
-              onClick={() => toggleWishlist(house)}
-            >
-              ❤️ Wishlist
-            </button>
+    <div>
+      <Hero />
+      <div className="p-10">
+        <h2 className="text-2xl font-bold mb-6">Explore Stays</h2>
+        {loading ? (
+          <p>Loading properties...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {properties.map((item) => (
+              <PropertyCard key={item.id} {...item} />
+            ))}
           </div>
-        </div>
-      ))}
+        )}
+      </div>
     </div>
   );
 }
-
-const styles = {
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px,1fr))",
-    gap: "20px",
-    padding: "20px"
-  },
-  card: {
-    background: "white",
-    borderRadius: "15px",
-    overflow: "hidden",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.1)"
-  },
-  image: {
-    width: "100%",
-    height: "200px",
-    objectFit: "cover"
-  },
-  wishlist: {
-    padding: "8px 15px",
-    borderRadius: "20px",
-    border: "none",
-    cursor: "pointer"
-  }
-};
 
 export default Home;

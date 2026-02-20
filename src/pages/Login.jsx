@@ -1,9 +1,7 @@
-// src/pages/Login.jsx
-
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -12,40 +10,34 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login Successful");
-      navigate("/dashboard");
+      alert("Welcome back!");
+      navigate("/");
     } catch (error) {
-      alert(error.message);
+      alert("Invalid email or password!");
+      console.error(error.message);
     }
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h2>Login</h2>
-
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form onSubmit={handleLogin} className="bg-white p-8 rounded-xl shadow-md w-96">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <input 
+          type="email" placeholder="Email" className="border w-full p-2 mb-4 rounded"
+          onChange={(e) => setEmail(e.target.value)} required 
         />
-
-        <br /><br />
-
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+        <input 
+          type="password" placeholder="Password" className="border w-full p-2 mb-6 rounded"
+          onChange={(e) => setPassword(e.target.value)} required 
         />
-
-        <br /><br />
-
-        <button type="submit">Login</button>
+        <button type="submit" className="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600">
+          Login
+        </button>
+        <p className="mt-4 text-center">
+          New user? <Link to="/signup" className="text-red-500">Create Account</Link>
+        </p>
       </form>
     </div>
   );
