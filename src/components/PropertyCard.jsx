@@ -1,42 +1,21 @@
-function PropertyCard({
-  id,
-  title,
-  location,
-  price,
-  image,
-  rating,
-  toggleWishlist,
-  isLiked
-}) {
-  return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1 duration-300 relative">
-      
-      <button
-        onClick={() =>
-          toggleWishlist({ id, title, location, price, image, rating })
-        }
-        className="absolute top-3 right-3 text-2xl"
-      >
-        {isLiked ? "❤️" : "🤍"}
-      </button>
+import React from "react";
+import { Link } from "react-router-dom";
 
+export default function PropertyCard({ property }) {
+  return (
+    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition">
       <img
-        src={image}
-        alt={title}
+        src={property.imageUrl || "https://via.placeholder.com/300"}
+        alt={property.title}
         className="w-full h-48 object-cover"
       />
-
       <div className="p-4">
-        <div className="flex justify-between items-center">
-          <h2 className="font-semibold text-lg">{title}</h2>
-          <span className="text-sm font-medium">⭐ {rating}</span>
-        </div>
-
-        <p className="text-gray-500 text-sm">{location}</p>
-        <p className="mt-2 font-bold">{price} / night</p>
+        <h3 className="font-bold text-lg text-gray-800 truncate">{property.title || "Beautiful Stay"}</h3>
+        <p className="text-gray-500 text-sm mt-1">{property.location || "India"}</p>
+        <p className="text-gray-900 font-semibold mt-3">
+          Rs. {property.price || "N/A"} <span className="text-sm font-normal text-gray-500">/ night</span>
+        </p>
       </div>
     </div>
   );
 }
-
-export default PropertyCard;
