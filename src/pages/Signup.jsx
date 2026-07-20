@@ -1,92 +1,91 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("buyer"); // Default role buyer rahega
+  const [role, setRole] = useState("buyer"); // buyer or owner
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
-      // 1. Firebase Auth mein account create karo
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // 2. Firestore database mein user ka role save karo
+      // Save user role in Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
-        role: role, // "buyer" ya "owner"
-        createdAt: new Date()
+        role: role,
+        uid: user.uid,
       });
 
-      // 3. Success ke baad login page ya dashboard par bhej do
-      if (role === "owner") {
-        navigate("/owner-dashboard");
-      } else {
-        navigate("/buyer-dashboard");
-      }
+      alert("Signup successful!");
+      navigate("/");
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form onSubmit={handleSignup} className="bg-white p-8 rounded-xl shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Create Account</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-red-500">Create Account</h2>
         
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        {error && <p className="bg-red-100 text-red-600 p-2 rounded mb-4 text-sm">{error}</p>}
 
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">I am a:</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full border p-2 rounded bg-white"
+        <form onSubmit={handleSignup} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 mb-1">Email</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500" 
+              required 
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 mb-1">Password</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500" 
+              required 
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 mb-1">I am a:</label>
+            <select 
+              value={role} 
+              onChange={(e) => setRole(e.target.value)} 
+              className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="buyer">Buyer / Customer</option>
+              <option value="owner">Property Owner</option>
+            </select>
+          </div>
+
+          <button 
+            type="submit" 
+            className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition font-bold"
           >
-            <option value="buyer">Buyer (Customer)</option>
-            <option value="owner">Owner (Property Lister)</option>
-          </select>
-        </div>
+            Sign Up
+          </button>
+        </form>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 mb-2">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        <button type="submit" className="w-full bg-red-500 text-white p-2 rounded font-bold hover:bg-red-600 mb-4">
-          Sign Up
-        </button>
-
-        <p className="text-sm text-center text-gray-600">
-          Already have an account? <Link to="/login" className="text-red-500 font-bold">Login</Link>
+        <p className="text-sm text-center text-gray-600 mt-4">
+          Already have an account? <Link to="/login" className="text-red-500 font-semibold">Login</Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }
