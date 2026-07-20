@@ -1,21 +1,26 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-// Abhi ke liye inko comment rakhte hain check karne ke liye
-// import Navbar from "./components/Navbar"; 
-// import Home from "./pages/Home";
+// Import your components and pages
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+// If you need other pages like PropertyDetails, import them here
 
 function App() {
   return (
     <div>
-      <h1 style={{textAlign: 'center', marginTop: '50px'}}>
-        Bhai, agar ye dikh raha hai toh Router setup sahi hai!
-      </h1>
-      <p style={{textAlign: 'center'}}>
-        Ab ek-ek karke Navbar aur Home ko uncomment karenge.
-      </p>
+      {/* Navbar sits outside Routes so it appears on every page */}
+      <Navbar />
+      
       <Routes>
-        <Route path="/" element={<div>Home Page Test</div>} />
+        {/* Your actual application routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        
+        {/* Add more routes later as needed */}
       </Routes>
     </div>
   );
