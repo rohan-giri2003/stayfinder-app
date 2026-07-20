@@ -1,22 +1,23 @@
-// src/App.jsx
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Navbar from "./components/Navbar";
+// Abhi ke liye inko comment rakhte hain check karne ke liye
+// import Navbar from "./components/Navbar"; 
+// import Home from "./pages/Home";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-
+    <div>
+      <h1 style={{textAlign: 'center', marginTop: '50px'}}>
+        Bhai, agar ye dikh raha hai toh Router setup sahi hai!
+      </h1>
+      <p style={{textAlign: 'center'}}>
+        Ab ek-ek karke Navbar aur Home ko uncomment karenge.
+      </p>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<div>Home Page Test</div>} />
       </Routes>
-    </BrowserRouter>
+    </div>
   );
 }
 
