@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db, storage, auth } from "../firebase"; // Path check kar lena
+import { db, storage, auth } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 
@@ -13,7 +13,6 @@ function AddProperty() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Image selection aur preview handle karne ke liye
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -33,27 +32,25 @@ function AddProperty() {
     setLoading(true);
 
     try {
-      // 1. Image ko Firebase Storage mein upload karo
       const storageRef = ref(storage, `properties/${Date.now()}_${image.name}`);
       await uploadBytes(storageRef, image);
       const imageUrl = await getDownloadURL(storageRef);
 
-      // 2. Property details ko Firestore mein save karo
       await addDoc(collection(db, "listings"), {
         title,
         location,
         price: Number(price),
-        imageUrl, // Ye permanent link refresh pe nahi jayega
-        rating: (Math.random() * (5 - 4) + 4).toFixed(1), // Random rating 4-5 ke beech
+        imageUrl,
+        rating: (Math.random() * (5 - 4) + 4).toFixed(1),
         ownerId: auth.currentUser?.uid || "anonymous",
         createdAt: new Date()
       });
 
       alert("Property successfully add ho gayi!");
-      navigate("/"); // Home page par wapas bhej do
+      navigate("/");
     } catch (error) {
       console.error("Error adding property: ", error);
-      alert("Kuch gadbad ho gayi!");
+      alert("Kuch gadbad ho gayi! Error console mein check karo.");
     } finally {
       setLoading(false);
     }
@@ -87,7 +84,7 @@ function AddProperty() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Price per night (₹)</label>
+          <label className="block text-gray-700 mb-2">Price per month / night (₹)</label>
           <input 
             type="number" 
             placeholder="4500" 
@@ -99,7 +96,7 @@ function AddProperty() {
 
         <div className="mb-6">
           <label className="block text-gray-700 mb-2">Upload Photo</label>
-          <input type="file" onChange={handleImageChange} className="mb-3" />
+          <input type="file" accept="image/*" onChange={handleImageChange} className="mb-3" />
           {preview && <img src={preview} alt="Preview" className="w-full h-40 object-cover rounded" />}
         </div>
 
