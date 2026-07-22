@@ -1,106 +1,82 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { db, auth } from "../firebase";
+import { collection, getDocs, deleteDoc, doc, query, where } from "firebase/firestore";
 
-function OwnerDashboard({ addProperty }) {
-  const [formData, setFormData] = useState({
-    title: "",
-    location: "",
-    price: "",
-    image: null,
-  });
+function OwnerDashboard() {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleChange = (e) => {
-    if (e.target.name === "image") {
-      setFormData({
-        ...formData,
-        image: e.target.files[0],
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
-      });
+  const fetchOwnerProperties = async () => {
+    try {
+      const q = query(
+        collection(db, "listings"),
+        where("ownerId", "==", auth.currentUser?.uid || "anonymous")
+      );
+      const querySnapshot = await getDocs(q);
+      const items = querySnapshot.docs.map((docItem) => ({
+        id: docItem.id,
+        ...docItem.data(),
+      }));
+      setProperties(items);
+    } catch (error) {
+      console.error("Error fetching owner properties: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    fetchOwnerProperties();
+  }, []);
 
-    const imageURL = URL.createObjectURL(formData.image);
-
-    const newProperty = {
-      id: Date.now(),
-      title: formData.title,
-      location: formData.location,
-      price: formData.price,
-      image: imageURL,
-    };
-
-    addProperty(newProperty);
-
-    alert("Property Added Successfully ✅");
-
-    setFormData({
-      title: "",
-      location: "",
-      price: "",
-      image: null,
-    });
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this property?")) {
+      try {
+        await deleteDoc(doc(db, "listings", id));
+        setProperties(properties.filter((item) => item.id !== id));
+        alert("Property deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting property: ", error);
+        alert("Failed to delete property.");
+      }
+    }
   };
 
+  if (loading) {
+    return <div className="text-center p-10">Loading your properties...</div>;
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Owner Dashboard</h1>
+    <div className="min-h-screen bg-gray-100 p-10">
+      <h1 className="text-3xl font-bold mb-6 text-center">Manage Your Properties</h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow-md space-y-4"
-      >
-        <input
-          type="text"
-          name="title"
-          placeholder="Property Title"
-          value={formData.title}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded-lg"
-        />
-
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={formData.location}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded-lg"
-        />
-
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={formData.price}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded-lg"
-        />
-
-        <input
-          type="file"
-          name="image"
-          accept="image/*"
-          onChange={handleChange}
-          required
-          className="w-full"
-        />
-
-        <button
-          type="submit"
-          className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
-        >
-          Add Property
-        </button>
-      </form>
+      {properties.length === 0 ? (
+        <p className="text-center text-gray-500">You have not listed any properties yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {properties.map((item) => (
+            <div key={item.id} className="bg-white rounded-xl shadow-md overflow-hidden">
+              <img src={item.imageUrl} alt={item.title} className="w-full h-48 object-cover" />
+              <div className="p-4">
+                <h3 className="font-bold text-xl mb-1">{item.title}</h3>
+                <p className="text-gray-600 mb-2">{item.location}</p>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-red-500 font-bold">₹{item.price} / month</span>
+                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                    ★ {item.rating}
+                  </span>
+                </div>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="w-full bg-red-500 text-white py-2 rounded font-bold hover:bg-red-600 transition"
+                >
+                  Delete Property
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
