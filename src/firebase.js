@@ -3,12 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAKtWajzDGCmAaV3tZ-a9WvMKUx_JPJ-1U",
-  authDomain: "stayfinder-app-928a7.firebaseapp.com",
-  projectId: "stayfinder-app-928a7",
-  storageBucket: "stayfinder-app-928a7.appspot.com",
-  messagingSenderId: "750943602429",
-  appId: "1:750943602429:web:581da8163d7c60e63d2094"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
