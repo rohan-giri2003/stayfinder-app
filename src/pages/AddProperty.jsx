@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db, auth } from "../firebase";
+import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
 function AddProperty() {
@@ -11,13 +11,12 @@ function AddProperty() {
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Image ko Base64 string mein convert karne ke liye taaki bina storage ke save ho sake
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result); // Base64 string
+        setPreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -27,84 +26,82 @@ function AddProperty() {
     e.preventDefault();
     
     if (!title || !location || !price || !preview) {
-      alert("Bhai, saari details aur photo bharna zaroori hai!");
+      alert("Please fill all details and upload an image!");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Direct Firestore mein data aur image ka preview URL save kar do
       await addDoc(collection(db, "listings"), {
         title,
         location,
         price: Number(price),
         imageUrl: preview,
         rating: (Math.random() * (5 - 4) + 4).toFixed(1),
-        ownerId: auth.currentUser?.uid || "anonymous",
         createdAt: new Date()
       });
 
-      alert("Property successfully add ho gayi!");
+      alert("Appliance listed successfully!");
       navigate("/");
     } catch (error) {
       console.error("Error adding property: ", error);
-      alert("Kuch gadbad ho gayi!");
+      alert("Failed to list appliance. Check console.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Add New Property</h1>
+    <div className="min-h-screen bg-gray-50 py-10 px-6 max-w-xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">List an Appliance for Rent</h1>
       
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-md max-w-md mx-auto">
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Property Title</label>
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-sm border space-y-4">
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-1">Appliance Title</label>
           <input 
             type="text" 
-            placeholder="e.g. Modern Appliance Setup" 
-            className="border w-full p-2 rounded"
+            placeholder="e.g. Double Door Refrigerator" 
+            className="border w-full p-2.5 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Location</label>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-1">Location</label>
           <input 
             type="text" 
             placeholder="e.g. Bangalore" 
-            className="border w-full p-2 rounded"
+            className="border w-full p-2.5 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Price per month (₹)</label>
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-1">Monthly Rent (₹)</label>
           <input 
             type="number" 
-            placeholder="1500" 
-            className="border w-full p-2 rounded"
+            placeholder="1200" 
+            className="border w-full p-2.5 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
         </div>
 
-        <div className="mb-6">
-          <label className="block text-gray-700 mb-2">Upload Photo</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} className="mb-3" />
-          {preview && <img src={preview} alt="Preview" className="w-full h-40 object-cover rounded" />}
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-1">Upload Photo</label>
+          <input type="file" accept="image/*" onChange={handleImageChange} className="mb-3 text-sm" />
+          {preview && <img src={preview} alt="Preview" className="w-full h-40 object-cover rounded-lg border" />}
         </div>
 
         <button 
           disabled={loading}
           type="submit" 
-          className={`w-full text-white p-3 rounded-lg font-bold transition ${loading ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'}`}
+          className="w-full bg-red-500 text-white p-3 rounded-lg font-bold text-sm hover:bg-red-600 transition disabled:bg-gray-400"
         >
-          {loading ? "Adding..." : "List Property"}
+          {loading ? "Listing..." : "Submit Appliance"}
         </button>
       </form>
     </div>
