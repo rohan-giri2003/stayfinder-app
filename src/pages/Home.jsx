@@ -26,7 +26,7 @@ function Home() {
   }, []);
 
   if (loading) {
-    return <div className="text-center p-10">Loading listings...</div>;
+    return <div className="text-center p-10">Loading rentals...</div>;
   }
 
   return (
@@ -34,16 +34,12 @@ function Home() {
       <h1 className="text-3xl font-bold mb-6 text-center">Available Rentals</h1>
 
       {listings.length === 0 ? (
-        <p className="text-center text-gray-500">No properties listed yet.</p>
+        <p className="text-center text-gray-500">No properties listed yet. Go to "List Appliance" to add one.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {listings.map((item) => (
             <div key={item.id} className="bg-white rounded-xl shadow-md overflow-hidden">
-              <img 
-                src={item.imageUrl} 
-                alt={item.title} 
-                className="w-full h-48 object-cover" 
-              />
+              <img src={item.imageUrl} alt={item.title} className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="font-bold text-xl mb-1">{item.title}</h3>
                 <p className="text-gray-600 mb-2">{item.location}</p>
