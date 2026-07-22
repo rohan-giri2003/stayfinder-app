@@ -1,28 +1,24 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-
-// Import your components and pages
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-// If you need other pages like PropertyDetails, import them here
+import AddProperty from "./pages/AddProperty";
 
 function App() {
   return (
-    <div>
-      {/* Navbar sits outside Routes so it appears on every page */}
+    <Router>
       <Navbar />
-      
       <Routes>
-        {/* Your actual application routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        
-        {/* Add more routes later as needed */}
+        <Route path="/add" element={<AddProperty />} />
       </Routes>
-    </div>
+    </Router>
   );
 }
 

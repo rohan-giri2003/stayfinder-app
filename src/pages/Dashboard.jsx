@@ -5,7 +5,7 @@ import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
+export default function Dashboard() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -22,22 +22,33 @@ function Dashboard() {
   }, [navigate]);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/");
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error: ", error);
+    }
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h2>Dashboard</h2>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-md border border-gray-200">
+        <h2 className="text-3xl font-bold text-red-500 mb-4">Dashboard</h2>
 
-      {user && (
-        <>
-          <p>Welcome: {user.email}</p>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      )}
+        {user && (
+          <div className="space-y-4">
+            <p className="text-gray-700 text-lg">
+              Welcome back, <span className="font-semibold text-gray-900">{user.email}</span>
+            </p>
+            <button 
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition font-medium"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
-
-export default Dashboard;
