@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Navbar() {
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -23,9 +31,19 @@ export default function Navbar() {
         <Link to="/" className="text-gray-700 hover:text-red-500 font-medium">Home</Link>
         <Link to="/dashboard" className="text-gray-700 hover:text-red-500 font-medium">Dashboard</Link>
         <Link to="/add" className="text-gray-700 hover:text-red-500 font-medium">Add Property</Link>
-        <Link to="/login" className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition">
-          Login / Signup
-        </Link>
+        
+        {user ? (
+          <button 
+            onClick={handleLogout} 
+            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link to="/login" className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition">
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
