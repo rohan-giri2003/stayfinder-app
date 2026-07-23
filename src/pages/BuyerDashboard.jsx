@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 function BuyerDashboard({ addToCart }) {
   const [city, setCity] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [category, setCategory] = useState("Stays"); // "Stays" or "Appliances"
   const navigate = useNavigate();
 
-  // Real PG & Room listings for rent
+  // Stay & PG catalog
   const pgListings = [
     {
       id: "pg-1",
@@ -27,30 +28,46 @@ function BuyerDashboard({ addToCart }) {
       deposit: 24000,
       rating: 4.8,
       image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=60"
-    },
-    {
-      id: "pg-3",
-      title: "Working Professionals Luxury PG",
-      location: "Bangalore",
-      type: "Private Room",
-      price: 9500,
-      deposit: 18000,
-      rating: 4.7,
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=60"
-    },
-    {
-      id: "pg-4",
-      title: "Budget Student Accommodation",
-      location: "Delhi",
-      type: "Triple Sharing",
-      price: 6000,
-      deposit: 10000,
-      rating: 4.3,
-      image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=500&q=60"
     }
   ];
 
-  const filteredProperties = pgListings.filter((item) => {
+  // Appliance Rental catalog (Extra requirement)
+  const applianceListings = [
+    {
+      id: "app-1",
+      title: "Double Door Refrigerator",
+      location: "Bangalore",
+      type: "Appliance",
+      price: 1200,
+      deposit: 1000,
+      rating: 4.5,
+      image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      id: "app-2",
+      title: "Automatic Washing Machine",
+      location: "Mumbai",
+      type: "Appliance",
+      price: 900,
+      deposit: 800,
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      id: "app-3",
+      title: "Split AC 1.5 Ton Inverter",
+      location: "Bangalore",
+      type: "Cooling",
+      price: 1500,
+      deposit: 1500,
+      rating: 4.7,
+      image: "https://images.unsplash.com/photo-1615743467472-83b632906b3a?auto=format&fit=crop&w=500&q=60"
+    }
+  ];
+
+  const currentData = category === "Stays" ? pgListings : applianceListings;
+
+  const filteredItems = currentData.filter((item) => {
     const matchesCity = city === "All" || item.location === city;
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.location.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,20 +75,20 @@ function BuyerDashboard({ addToCart }) {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Search & Filter Header */}
-      <div className="bg-white border-b py-6 px-8 shadow-sm mb-8">
+    <div className="min-h-screen bg-gray-50 pb-28">
+      {/* Search & Header */}
+      <div className="bg-white border-b py-6 px-8 shadow-sm mb-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900">Find PGs, Rooms & Flats for Rent</h1>
-            <p className="text-gray-500 text-sm mt-0.5">Explore verified rental properties with zero brokerage.</p>
+            <h1 className="text-2xl font-extrabold text-gray-900">Explore Stays & Rental Appliances</h1>
+            <p className="text-gray-500 text-sm mt-0.5">Find a place to stay and add appliances for your home easily.</p>
           </div>
 
           <div className="flex gap-3 w-full md:w-auto">
             <select 
               value={city} 
               onChange={(e) => setCity(e.target.value)}
-              className="border p-2.5 rounded-lg text-sm bg-white font-medium focus:outline-none focus:ring-1 focus:ring-red-500"
+              className="border p-2.5 rounded-xl text-sm bg-white font-medium focus:outline-none focus:ring-1 focus:ring-red-500"
             >
               <option value="All">📍 All Cities</option>
               <option value="Bangalore">Bangalore</option>
@@ -81,58 +98,88 @@ function BuyerDashboard({ addToCart }) {
 
             <input 
               type="text" 
-              placeholder="Search by locality or name..."
+              placeholder="Search stay or appliance..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border p-2.5 rounded-lg text-sm w-full md:w-72 focus:outline-none focus:ring-1 focus:ring-red-500"
+              className="border p-2.5 rounded-xl text-sm w-full md:w-72 focus:outline-none focus:ring-1 focus:ring-red-500"
             />
           </div>
         </div>
+
+        {/* Category Switcher Tabs */}
+        <div className="max-w-7xl mx-auto flex gap-3 mt-6">
+          <button
+            onClick={() => setCategory("Stays")}
+            className={`px-5 py-2 rounded-xl text-xs font-bold transition ${
+              category === "Stays" 
+                ? "bg-red-500 text-white shadow-sm" 
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            🏠 PGs & Stays
+          </button>
+          <button
+            onClick={() => setCategory("Appliances")}
+            className={`px-5 py-2 rounded-xl text-xs font-bold transition ${
+              category === "Appliances" 
+                ? "bg-red-500 text-white shadow-sm" 
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            🛋️ Rental Appliances
+          </button>
+        </div>
       </div>
 
-      {/* Property Cards Grid */}
+      {/* Grid Section */}
       <div className="max-w-7xl mx-auto px-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Available Properties ({filteredProperties.length})</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-gray-800">
+            {category === "Stays" ? "Available Stays & Rooms" : "Available Appliances for Rent"} ({filteredItems.length})
+          </h2>
+          <button 
+            onClick={() => navigate("/add")}
+            className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-black transition"
+          >
+            + List Property / Appliance
+          </button>
+        </div>
 
-        {filteredProperties.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-xl border">
-            <p className="text-gray-500 font-medium">No properties found matching your search.</p>
+        {filteredItems.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl border">
+            <p className="text-gray-500 font-medium">No items found matching your search.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProperties.map((property) => (
-              <div key={property.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition">
+            {filteredItems.map((item) => (
+              <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition">
                 <div>
                   <div className="relative">
-                    <img 
-                      src={property.image} 
-                      alt={property.title} 
-                      className="w-full h-48 object-cover" 
-                    />
+                    <img src={item.image} alt={item.title} className="w-full h-48 object-cover" />
                     <span className="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white text-xs font-semibold px-2.5 py-1 rounded-md">
-                      {property.location}
+                      {item.location}
                     </span>
                     <span className="absolute top-3 right-3 bg-white/90 text-gray-800 text-xs font-bold px-2.5 py-1 rounded-md">
-                      {property.type}
+                      {item.type}
                     </span>
                   </div>
 
                   <div className="p-5">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-bold text-base text-gray-800">{property.title}</h3>
+                      <h3 className="font-bold text-base text-gray-800">{item.title}</h3>
                       <span className="bg-green-100 text-green-800 text-xs font-bold px-2 py-0.5 rounded-md">
-                        ★ {property.rating}
+                        ★ {item.rating}
                       </span>
                     </div>
 
                     <div className="mt-4 pt-3 border-t flex justify-between items-center">
                       <div>
                         <span className="text-xs text-gray-400 block">Monthly Rent</span>
-                        <span className="text-lg font-extrabold text-red-500">₹{property.price} <span className="text-xs text-gray-500 font-normal">/ mo</span></span>
+                        <span className="text-lg font-extrabold text-red-500">₹{item.price} <span className="text-xs text-gray-500 font-normal">/ mo</span></span>
                       </div>
                       <div className="text-right">
                         <span className="text-xs text-gray-400 block">Security Deposit</span>
-                        <span className="text-sm font-bold text-gray-700">₹{property.deposit}</span>
+                        <span className="text-sm font-bold text-gray-700">₹{item.deposit}</span>
                       </div>
                     </div>
                   </div>
@@ -141,16 +188,12 @@ function BuyerDashboard({ addToCart }) {
                 <div className="p-5 pt-0">
                   <button 
                     onClick={() => {
-                      if (addToCart) {
-                        addToCart(property);
-                        alert(`${property.title} added to your booking list!`);
-                      } else {
-                        navigate("/cart");
-                      }
+                      addToCart(item);
+                      alert(`${item.title} added to your cart!`);
                     }}
-                    className="w-full bg-red-500 text-white py-2.5 rounded-lg font-bold text-sm hover:bg-red-600 transition shadow-sm"
+                    className="w-full bg-red-500 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-sm"
                   >
-                    Rent Now / Book Visit
+                    {category === "Stays" ? "Book Stay & Add to Cart" : "Rent Appliance"}
                   </button>
                 </div>
               </div>
