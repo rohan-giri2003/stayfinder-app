@@ -9,10 +9,22 @@ function Login({ onLogin }) {
   const handleLogin = (e) => {
     e.preventDefault();
     if (!email || !password) {
-      alert("Please enter email and password.");
+      alert("Please fill in all fields.");
       return;
     }
-    onLogin();
+
+    // Check credentials against registered users in localStorage
+    const existingUsers = JSON.parse(localStorage.getItem("stayfinder_users")) || [];
+    const validUser = existingUsers.find((u) => u.email === email && u.password === password);
+
+    if (!validUser) {
+      alert("Invalid email or password! Please check your credentials or sign up first.");
+      return;
+    }
+
+    // Save active user info
+    localStorage.setItem("stayfinder_current_user", JSON.stringify(validUser));
+    onLogin(validUser);
     navigate("/");
   };
 
@@ -20,7 +32,7 @@ function Login({ onLogin }) {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-6">
       <div className="bg-white p-8 rounded-2xl shadow-sm border max-w-md w-full">
         <h2 className="text-2xl font-extrabold text-center text-gray-900 mb-2">Welcome to StayFinder</h2>
-        <p className="text-center text-gray-500 text-sm mb-6">Login to explore PGs and rooms</p>
+        <p className="text-center text-gray-500 text-sm mb-6">Log in to your account</p>
         
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
