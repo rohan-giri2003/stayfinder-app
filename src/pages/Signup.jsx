@@ -14,7 +14,6 @@ function Signup() {
       return;
     }
 
-    // Save user details to localStorage to simulate a real backend database
     const existingUsers = JSON.parse(localStorage.getItem("stayfinder_users")) || [];
     const userExists = existingUsers.some((u) => u.email === email);
 
@@ -77,7 +76,7 @@ function Signup() {
 
           <button 
             type="submit"
-            className="w-full bg-red-500 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-sm mt-2"
+            className="w-full bg-red-500 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-sm mt-2 cursor-pointer"
           >
             Sign up
           </button>

@@ -4,10 +4,9 @@ import { useNavigate } from "react-router-dom";
 function BuyerDashboard({ addToCart }) {
   const [city, setCity] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [category, setCategory] = useState("Stays"); // "Stays" or "Appliances"
+  const [category, setCategory] = useState("Stays");
   const navigate = useNavigate();
 
-  // Stay & PG catalog
   const pgListings = [
     {
       id: "pg-1",
@@ -31,7 +30,6 @@ function BuyerDashboard({ addToCart }) {
     }
   ];
 
-  // Appliance Rental catalog (Extra requirement)
   const applianceListings = [
     {
       id: "app-1",
@@ -76,7 +74,6 @@ function BuyerDashboard({ addToCart }) {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
-      {/* Search & Header */}
       <div className="bg-white border-b py-6 px-8 shadow-sm mb-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
@@ -106,11 +103,10 @@ function BuyerDashboard({ addToCart }) {
           </div>
         </div>
 
-        {/* Category Switcher Tabs */}
         <div className="max-w-7xl mx-auto flex gap-3 mt-6">
           <button
             onClick={() => setCategory("Stays")}
-            className={`px-5 py-2 rounded-xl text-xs font-bold transition ${
+            className={`px-5 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
               category === "Stays" 
                 ? "bg-red-500 text-white shadow-sm" 
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -120,7 +116,7 @@ function BuyerDashboard({ addToCart }) {
           </button>
           <button
             onClick={() => setCategory("Appliances")}
-            className={`px-5 py-2 rounded-xl text-xs font-bold transition ${
+            className={`px-5 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
               category === "Appliances" 
                 ? "bg-red-500 text-white shadow-sm" 
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -131,7 +127,6 @@ function BuyerDashboard({ addToCart }) {
         </div>
       </div>
 
-      {/* Grid Section */}
       <div className="max-w-7xl mx-auto px-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">
@@ -139,7 +134,7 @@ function BuyerDashboard({ addToCart }) {
           </h2>
           <button 
             onClick={() => navigate("/add")}
-            className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-black transition"
+            className="bg-gray-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-black transition shadow-sm cursor-pointer"
           >
             + List Property / Appliance
           </button>
@@ -191,7 +186,7 @@ function BuyerDashboard({ addToCart }) {
                       addToCart(item);
                       alert(`${item.title} added to your cart!`);
                     }}
-                    className="w-full bg-red-500 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-sm"
+                    className="w-full bg-red-500 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-sm cursor-pointer"
                   >
                     {category === "Stays" ? "Book Stay & Add to Cart" : "Rent Appliance"}
                   </button>
