@@ -3,14 +3,48 @@ import { useNavigate } from "react-router-dom";
 
 function Home({ addToCart }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("All");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCity, setSelectedCity] = useState("All");
+  const [activeTab, setActiveTab] = useState("Stays"); // "Stays" or "Appliances"
   const navigate = useNavigate();
 
-  // Mock professional rental catalog data matching your app requirements
-  const allListings = [
+  // Stay & PG Catalog
+  const staysListings = [
     {
-      id: "1",
+      id: "stay-1",
+      title: "Cozy Single Room PG in Koramangala",
+      category: "PG / Room",
+      location: "Bangalore",
+      price: 8500,
+      deposit: 15000,
+      rating: 4.6,
+      imageUrl: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      id: "stay-2",
+      title: "Double Sharing Furnished Flat",
+      category: "Flat",
+      location: "Mumbai",
+      price: 12000,
+      deposit: 25000,
+      rating: 4.8,
+      imageUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      id: "stay-3",
+      title: "Working Professionals Luxury PG",
+      category: "PG / Room",
+      location: "Bangalore",
+      price: 9500,
+      deposit: 18000,
+      rating: 4.7,
+      imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=60"
+    }
+  ];
+
+  // Appliance Rental Catalog (Extra feature for tenants)
+  const applianceListings = [
+    {
+      id: "app-1",
       title: "Double Door Refrigerator",
       category: "Appliances",
       location: "Bangalore",
@@ -20,7 +54,7 @@ function Home({ addToCart }) {
       imageUrl: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?auto=format&fit=crop&w=500&q=60"
     },
     {
-      id: "2",
+      id: "app-2",
       title: "Automatic Washing Machine",
       category: "Appliances",
       location: "Mumbai",
@@ -30,7 +64,7 @@ function Home({ addToCart }) {
       imageUrl: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=60"
     },
     {
-      id: "3",
+      id: "app-3",
       title: "Split AC 1.5 Ton Inverter",
       category: "Cooling",
       location: "Bangalore",
@@ -38,45 +72,35 @@ function Home({ addToCart }) {
       deposit: 1500,
       rating: 4.7,
       imageUrl: "https://images.unsplash.com/photo-1615743467472-83b632906b3a?auto=format&fit=crop&w=500&q=60"
-    },
-    {
-      id: "4",
-      title: "Air Cooler 50L Heavy Duty",
-      category: "Cooling",
-      location: "Delhi",
-      price: 600,
-      deposit: 500,
-      rating: 4.2,
-      imageUrl: "https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=500&q=60"
     }
   ];
 
-  // Filter listings based on search, location, and category
-  const filteredListings = allListings.filter((item) => {
+  const currentData = activeTab === "Stays" ? staysListings : applianceListings;
+
+  const filteredListings = currentData.filter((item) => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLocation = selectedLocation === "All" || item.location === selectedLocation;
-    const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
-    return matchesSearch && matchesLocation && matchesCategory;
+    const matchesCity = selectedCity === "All" || item.location === selectedCity;
+    return matchesSearch && matchesCity;
   });
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      {/* Hero Search & Filter Section */}
+      {/* Hero Header & Search Section */}
       <div className="bg-white border-b py-8 px-6 shadow-sm mb-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Rent Appliances Monthly</h1>
-            <p className="text-gray-500 text-sm mt-1">Flexible rentals for your home without the heavy price tag.</p>
+            <h1 className="text-3xl font-extrabold text-gray-900">Find Your Perfect Stay & Rentals</h1>
+            <p className="text-gray-500 text-sm mt-1">Search PGs, rooms, flats, and rent appliances for your home easily.</p>
           </div>
 
           {/* Location & Search Controls */}
           <div className="flex flex-wrap gap-3 w-full md:w-auto">
             <select 
-              value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
               className="border p-2.5 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-red-500 font-medium"
             >
-              <option value="All">📍 All Locations</option>
+              <option value="All">📍 All Cities</option>
               <option value="Bangalore">Bangalore</option>
               <option value="Mumbai">Mumbai</option>
               <option value="Delhi">Delhi</option>
@@ -84,7 +108,7 @@ function Home({ addToCart }) {
 
             <input 
               type="text" 
-              placeholder="Search fridge, AC, washing machine..."
+              placeholder={activeTab === "Stays" ? "Search locality, PG, room..." : "Search fridge, AC, washing machine..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="border p-2.5 rounded-lg text-sm w-full md:w-72 focus:outline-none focus:ring-1 focus:ring-red-500"
@@ -92,39 +116,48 @@ function Home({ addToCart }) {
           </div>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="max-w-7xl mx-auto flex gap-3 mt-6 overflow-x-auto pb-2">
-          {["All", "Appliances", "Cooling"].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition ${
-                selectedCategory === cat 
-                  ? "bg-red-500 text-white shadow-sm" 
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Tab Switcher: Stays vs Appliances */}
+        <div className="max-w-7xl mx-auto flex gap-4 mt-6">
+          <button
+            onClick={() => setActiveTab("Stays")}
+            className={`px-6 py-2 rounded-lg text-sm font-bold transition ${
+              activeTab === "Stays" 
+                ? "bg-red-500 text-white shadow-sm" 
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            🏠 Find Stays & PGs
+          </button>
+          <button
+            onClick={() => setActiveTab("Appliances")}
+            className={`px-6 py-2 rounded-lg text-sm font-bold transition ${
+              activeTab === "Appliances" 
+                ? "bg-red-500 text-white shadow-sm" 
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            🛋️ Rent Appliances (Extra)
+          </button>
         </div>
       </div>
 
-      {/* Product Grid Section */}
+      {/* Grid Section */}
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Available Rentals ({filteredListings.length})</h2>
+          <h2 className="text-xl font-bold text-gray-800">
+            {activeTab === "Stays" ? "Available Stays & PGs" : "Available Rental Appliances"} ({filteredListings.length})
+          </h2>
           <button 
             onClick={() => navigate("/add")}
             className="bg-gray-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black transition"
           >
-            + List New Appliance
+            + List Property / Appliance
           </button>
         </div>
 
         {filteredListings.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-xl border">
-            <p className="text-gray-500 font-medium">No appliances found matching your filters.</p>
+            <p className="text-gray-500 font-medium">No listings found matching your search.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -139,6 +172,9 @@ function Home({ addToCart }) {
                     />
                     <span className="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white text-xs font-semibold px-2.5 py-1 rounded-md">
                       {item.location}
+                    </span>
+                    <span className="absolute top-3 right-3 bg-white/90 text-gray-800 text-xs font-bold px-2.5 py-1 rounded-md">
+                      {item.category}
                     </span>
                   </div>
 
@@ -156,7 +192,7 @@ function Home({ addToCart }) {
                         <span className="text-xl font-extrabold text-red-500">₹{item.price} <span className="text-xs text-gray-500 font-normal">/ mo</span></span>
                       </div>
                       <div className="text-right">
-                        <span className="text-xs text-gray-400 block">Deposit</span>
+                        <span className="text-xs text-gray-400 block">Security Deposit</span>
                         <span className="text-sm font-bold text-gray-700">₹{item.deposit}</span>
                       </div>
                     </div>
@@ -175,7 +211,7 @@ function Home({ addToCart }) {
                     }}
                     className="w-full bg-red-500 text-white py-3 rounded-lg font-bold text-sm hover:bg-red-600 transition shadow-sm"
                   >
-                    Add to Cart & Rent
+                    {activeTab === "Stays" ? "Book Stay / Add to Cart" : "Rent Appliance"}
                   </button>
                 </div>
               </div>
