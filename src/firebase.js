@@ -4,12 +4,12 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy...", // Yahan apni actual API key daalo
-  authDomain: "stayfinder-xxxx.firebaseapp.com", // Yahan apna authDomain daalo
-  projectId: "stayfinder-xxxx", // Yahan apna projectId daalo
-  storageBucket: "stayfinder-xxxx.appspot.com", // Yahan apna storageBucket daalo
-  messagingSenderId: "123456789", // Yahan apna messagingSenderId daalo
-  appId: "1:123456:web:abcdef" // Yahan apna appId daalo
+  apiKey: "YOUR_ACTUAL_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
