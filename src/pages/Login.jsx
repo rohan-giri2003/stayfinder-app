@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-function Login() {
+function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -9,29 +9,29 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (!email || !password) {
-      alert("Please fill in all fields.");
+      alert("Please enter email and password.");
       return;
     }
-    // Successful login simulation matching your roadmap
-    alert("Login successful!");
+    onLogin();
     navigate("/");
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-6">
-      <div className="bg-white p-8 rounded-xl shadow-sm border max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login to StayFinder</h2>
+      <div className="bg-white p-8 rounded-2xl shadow-sm border max-w-md w-full">
+        <h2 className="text-2xl font-extrabold text-center text-gray-900 mb-2">Welcome to StayFinder</h2>
+        <p className="text-center text-gray-500 text-sm mb-6">Login to explore PGs and rooms</p>
         
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
             <input 
               type="email" 
               required
-              placeholder="Enter your email"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border p-2.5 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
+              className="w-full border p-3 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
             />
           </div>
 
@@ -40,22 +40,22 @@ function Login() {
             <input 
               type="password" 
               required
-              placeholder="Enter your password"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border p-2.5 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
+              className="w-full border p-3 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
             />
           </div>
 
           <button 
             type="submit"
-            className="w-full bg-red-500 text-white py-3 rounded-lg font-bold text-sm hover:bg-red-600 transition"
+            className="w-full bg-red-500 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-sm mt-2"
           >
-            Login
+            Log in
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-sm text-gray-500 mt-6">
           Don't have an account? <Link to="/signup" className="text-red-500 font-semibold hover:underline">Sign up</Link>
         </p>
       </div>

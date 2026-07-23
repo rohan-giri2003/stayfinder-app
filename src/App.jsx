@@ -1,58 +1,50 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import BuyerDashboard from "./pages/BuyerDashboard";
-import OwnerDashboard from "./pages/OwnerDashboard";
-import AddProperty from "./pages/AddProperty";
+import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
+import BottomNav from "./components/BottomNav";
 
 function App() {
-  const [cartItems, setCartItems] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const addToCart = (item) => {
-    setCartItems((prevItems) => {
-      const exists = prevItems.find((cartItem) => cartItem.id === item.id);
-      if (exists) {
-        return prevItems;
-      }
-      return [...prevItems, item];
-    });
+    setCart([...cart, item]);
   };
 
-  const removeFromCart = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
+  const removeFromCart = (index) => {
+    const newCart = cart.filter((_, i) => i !== index);
+    setCart(newCart);
   };
 
   return (
     <Router>
-      <Navbar cartCount={cartItems.length} />
       <Routes>
-        <Route path="/" element={<Home addToCart={addToCart} />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/buyer-dashboard" element={<BuyerDashboard addToCart={addToCart} />} />
-        <Route path="/owner-dashboard" element={<OwnerDashboard />} />
-        <Route path="/add" element={<AddProperty />} />
-        <Route 
-          path="/cart" 
-          element={<Cart cartItems={cartItems} removeFromCart={removeFromCart} />} 
-        />
-        <Route 
-          path="/checkout" 
-          element={<Checkout cartItems={cartItems} clearCart={clearCart} />} 
-        />
-        <Route path="/order-success" element={<OrderSuccess />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {!isAuthenticated ? (
+          <>
+            <Route path="/login" element={<Login onLogin={() => setIsAuthenticated(true)} />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="*" element={<Navigate to="/login" />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<BuyerDashboard addToCart={addToCart} />} />
+            <Route path="/wishlists" element={<Cart cart={cart} removeFromCart={removeFromCart} />} />
+            <Route path="/trips" element={<Cart cart={cart} removeFromCart={removeFromCart} />} />
+            <Route path="/messages" element={<div className="p-16 text-center font-bold text-gray-500 text-lg">No new messages</div>} />
+            <Route path="/profile" element={<Profile onLogout={() => setIsAuthenticated(false)} />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </>
+        )}
       </Routes>
+      {isAuthenticated && <BottomNav />}
     </Router>
   );
 }
