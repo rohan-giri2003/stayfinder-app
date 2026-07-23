@@ -7,48 +7,58 @@ function Home({ addToCart }) {
   const [activeTab, setActiveTab] = useState("Stays"); // "Stays" or "Appliances"
   const navigate = useNavigate();
 
-  // Stay & PG Catalog
+  // Stay & PG Catalog including Muzaffarpur, Bihar
   const staysListings = [
     {
       id: "stay-1",
-      title: "Cozy Single Room PG in Koramangala",
+      title: "Cozy Single Room PG",
+      category: "PG / Room",
+      location: "Muzaffarpur",
+      price: 5500,
+      deposit: 8000,
+      rating: 4.6,
+      imageUrl: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      id: "stay-2",
+      title: "Furnished Student Room Near Station",
+      category: "Room",
+      location: "Muzaffarpur",
+      price: 4500,
+      deposit: 5000,
+      rating: 4.4,
+      imageUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      id: "stay-3",
+      title: "Luxury Flat for Working Professionals",
+      category: "Flat",
+      location: "Patna",
+      price: 11000,
+      deposit: 20000,
+      rating: 4.8,
+      imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      id: "stay-4",
+      title: "Single Room PG in Koramangala",
       category: "PG / Room",
       location: "Bangalore",
       price: 8500,
       deposit: 15000,
       rating: 4.6,
       imageUrl: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=60"
-    },
-    {
-      id: "stay-2",
-      title: "Double Sharing Furnished Flat",
-      category: "Flat",
-      location: "Mumbai",
-      price: 12000,
-      deposit: 25000,
-      rating: 4.8,
-      imageUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=60"
-    },
-    {
-      id: "stay-3",
-      title: "Working Professionals Luxury PG",
-      category: "PG / Room",
-      location: "Bangalore",
-      price: 9500,
-      deposit: 18000,
-      rating: 4.7,
-      imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=60"
     }
   ];
 
-  // Appliance Rental Catalog (Extra feature for tenants)
+  // Appliance Rental Catalog
   const applianceListings = [
     {
       id: "app-1",
       title: "Double Door Refrigerator",
       category: "Appliances",
-      location: "Bangalore",
-      price: 1200,
+      location: "Muzaffarpur",
+      price: 1100,
       deposit: 1000,
       rating: 4.5,
       imageUrl: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?auto=format&fit=crop&w=500&q=60"
@@ -57,7 +67,7 @@ function Home({ addToCart }) {
       id: "app-2",
       title: "Automatic Washing Machine",
       category: "Appliances",
-      location: "Mumbai",
+      location: "Patna",
       price: 900,
       deposit: 800,
       rating: 4.8,
@@ -100,10 +110,10 @@ function Home({ addToCart }) {
               onChange={(e) => setSelectedCity(e.target.value)}
               className="border p-2.5 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-red-500 font-medium"
             >
-              <option value="All">📍 All Cities</option>
+              <option value="All">📍 All Locations</option>
+              <option value="Muzaffarpur">Muzaffarpur (Bihar)</option>
+              <option value="Patna">Patna (Bihar)</option>
               <option value="Bangalore">Bangalore</option>
-              <option value="Mumbai">Mumbai</option>
-              <option value="Delhi">Delhi</option>
             </select>
 
             <input 
@@ -116,7 +126,7 @@ function Home({ addToCart }) {
           </div>
         </div>
 
-        {/* Tab Switcher: Stays vs Appliances */}
+        {/* Tab Switcher: Stays vs Appliances (Clean text without extra tag) */}
         <div className="max-w-7xl mx-auto flex gap-4 mt-6">
           <button
             onClick={() => setActiveTab("Stays")}
@@ -136,7 +146,7 @@ function Home({ addToCart }) {
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            🛋️ Rent Appliances (Extra)
+            🛋️ Rent Appliances
           </button>
         </div>
       </div>
